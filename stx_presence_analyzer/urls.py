@@ -1,5 +1,6 @@
-from django.conf.urls import patterns
+from django.conf.urls import patterns, url
 from django.contrib import admin
+from analyzer.views import PresenceWeekday, PresenceMeanTimeWeekday, PresenceStartEnd, Users
 
 admin.autodiscover()
 
@@ -9,6 +10,10 @@ admin.autodiscover()
 
 urlpatterns = patterns(
     '',
+    url(r'^presenceweekday/$', PresenceWeekday.as_view()),
+    url(r'^meantimeweekday/$', PresenceMeanTimeWeekday.as_view()),
+    url(r'^startend/$', PresenceStartEnd.as_view()),
+    url(r'^users/$', Users.as_view()),
     # Example:
     # (r'^{{ project_name }}/', include('{{ project_name }}.foo.urls')),
 

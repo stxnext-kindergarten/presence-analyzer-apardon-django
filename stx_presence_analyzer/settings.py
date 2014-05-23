@@ -74,3 +74,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     BASE_DIR('public'),
 )
+
+TEMPLATE_DIRS = (
+    BASE_DIR('templates'),
+)

@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% load staticfiles %}
+{% block script %}
+<script type="text/javascript">
+    google.load("visualization", "1", {packages:["corechart"], 'language': 'en'});
+</script>
+<script src="{{ STATIC_URL }}js/json_presence_weekday.js"type="text/javascript" />
+{% endblock %}
+
+{% block content %}
+<div id="content">
+    <h2>Presence by weekday</h2>
+    <p>
+        <select id="user_id" style="display: none">
+            <option value="">--</option>
+        </select>
+        <div id="photo" style="display: none"></div>
+        <div id="chart_div" style="display: none"></div>
+        <div id="loading">
+            <img src="{{ STATIC_URL }}/img/loading.gif" />
+        </div>
+    </p>
+</div>
+{% endblock %}
