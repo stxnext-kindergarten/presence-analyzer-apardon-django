@@ -4,6 +4,7 @@ from stx_presence_analyzer.analyzer import utils
 from django import http
 from django.utils import simplejson
 
+
 # Create your views here.
 class JSONResponseMixin(object):
     def render_to_response(self, context):
