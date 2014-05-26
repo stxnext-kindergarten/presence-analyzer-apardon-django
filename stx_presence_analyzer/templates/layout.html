@@ -21,14 +21,14 @@
 	<div id="main">
         <div id="header">
             <ul>
-                <li id="selected">
-                    <a href="/presenceweekday/">Presence by weekday</a>
+                <li{% if active_page == 'presence_weekday' %} id="selected" {% endif %}>
+                    <a href="/">Presence by weekday</a>
                 </li>
-                <li>
-                    <a href="/meantimeweekday/">Presence mean time</a>
+                <li{% if active_page == 'mean_time_weekday' %} id="selected" {% endif %}>
+                    <a href="/mean_time_presence/">Presence mean time</a>
                 </li>
-                <li>
-                    <a href="/startend/">Presence start-end</a>
+                <li{% if active_page == 'presence_start_end' %} id="selected" {% endif %}>
+                    <a href="/presence_start_end/">Presence start-end</a>
                 </li>
             </ul>
         </div>

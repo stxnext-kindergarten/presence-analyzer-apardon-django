@@ -69,8 +69,9 @@ def get_data():
         }
     }
     """
+    data_file = 'runtime/data/sample_data.csv'
     data = {}
-    with open(app.config['DATA_CSV'], 'r') as csvfile:
+    with open('runtime/data/sample_data.csv', 'r') as csvfile:
         presence_reader = csv.reader(csvfile, delimiter=',')
         for i, row in enumerate(presence_reader):
             if len(row) != 4:
