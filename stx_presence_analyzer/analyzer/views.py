@@ -27,11 +27,12 @@ class JSONResponseMixin(object):
         "Convert the context dictionary into a JSON object"
         return json.dumps(context)
 
-    def get_user_id_from_url(self):
-        if self.kwargs['user_id'] is not None:
-            return self.kwargs['user_id']
+    def get_user_id_from_url(self, user_id=None):
+        if self.kwargs['user_id']:
+            user_id = self.kwargs['user_id']
+            return user_id
         else:
-            return None
+            return user_id
 
 
 class PresenceWeekday(JSONResponseMixin, TemplateView):
