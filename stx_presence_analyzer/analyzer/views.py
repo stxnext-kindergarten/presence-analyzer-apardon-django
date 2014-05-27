@@ -9,41 +9,20 @@ import logging
 log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
 
 
-class JSONResponseMixin(object):
-    """
-    A mixin that can be used to render a JSON response.
-    """
-    def render_to_json_response(self, context, **response_kwargs):
-        """
-        Returns a JSON response, transforming 'context' to make the payload.
-        """
-        return HttpResponse(
-            self.convert_context_to_json(context),
-            content_type='application/json',
-            **response_kwargs
-        )
-
-    def convert_context_to_json(self, context):
-        "Convert the context dictionary into a JSON object"
-        return json.dumps(context)
-
-    def get_user_id_from_url(self, user_id=None):
-        if self.kwargs['user_id']:
-            user_id = self.kwargs['user_id']
-            return user_id
-        else:
-            return user_id
-
-
-class PresenceWeekday(JSONResponseMixin, TemplateView):
+class PresenceWeekday(TemplateView):
     template_name = 'presence_weekday.html'
+    # template_name = 'tmp.html'
 
     def get_context_data(self, **kwargs):
         context = super(PresenceWeekday, self).get_context_data(**kwargs)
-        user_id = int(self.get_user_id_from_url())
+        user_id = kwargs.get('user_id')
+
+        if user_id is not None:
+            user_id = int(user_id)
+
         data = utils.get_data()
 
-        if user_id not in data:
+        if user_id is None or user_id not in data:
             log.debug('User %s not found!', user_id)
             return []
 
@@ -57,18 +36,21 @@ class PresenceWeekday(JSONResponseMixin, TemplateView):
 
         context['users'] = users
         context['presence_weekday'] = result
-        context['user_id'] = user_id
         context['active_page'] = 'presence_weekday'
 
         return context
 
 
-class MeanTimePresence(JSONResponseMixin, TemplateView):
+class MeanTimePresence(TemplateView):
     template_name = 'mean_time_weekday.html'
 
     def get_context_data(self, **kwargs):
         context = super(MeanTimePresence, self).get_context_data(**kwargs)
-        user_id = int(self.get_user_id_from_url())
+        user_id = kwargs.get('user_id')
+
+        if user_id is not None:
+            user_id = int(user_id)
+
         data = utils.get_data()
 
         if user_id not in data:
@@ -87,19 +69,23 @@ class MeanTimePresence(JSONResponseMixin, TemplateView):
         return context
 
 
-class PresenceStartEnd(JSONResponseMixin, TemplateView):
+class PresenceStartEnd(TemplateView):
     template_name = 'presence_start_end.html'
 
     def get_context_data(self, **kwargs):
         context = super(PresenceStartEnd, self).get_context_data(**kwargs)
-        user = int(self.get_user_id_from_url())
+        user_id = kwargs.get('user_id')
+
+        if user_id is not None:
+            user_id = int(user_id)
+
         data = utils.get_data()
 
-        if user not in data:
-            log.debug('User %s not found!', user)
+        if user_id not in data:
+            log.debug('User %s not found!', user_id)
             return []
 
-        start_end_by_weekday = utils.group_start_end_by_weekday(data[user])
+        start_end_by_weekday = utils.group_start_end_by_weekday(data[user_id])
 
         result = [
             (
