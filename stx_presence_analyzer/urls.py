@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 from django.contrib import admin
-from analyzer import views
+from stx_presence_analyzer.analyzer import views
 
 admin.autodiscover()
 

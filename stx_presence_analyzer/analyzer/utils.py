@@ -4,7 +4,6 @@ Helper functions used in views.
 """
 
 import csv
-from json import dumps
 from functools import wraps
 from datetime import datetime
 from lxml import etree
@@ -13,18 +12,7 @@ import threading
 import time
 
 import logging
-log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
-
-
-def jsonify(function):
-    """
-    Creates a response with the JSON representation of wrapped function result.
-    """
-    @wraps(function)
-    def inner(*args, **kwargs):
-        return Response(dumps(function(*args, **kwargs)),
-                        mimetype='application/json')
-    return inner
+log = logging.getLogger(__name__)  # pylint: disable=C0103
 
 
 def cache(cache_time):
@@ -69,7 +57,6 @@ def get_data():
         }
     }
     """
-    data_file = 'runtime/data/sample_data.csv'
     data = {}
     with open('runtime/data/sample_data.csv', 'r') as csvfile:
         presence_reader = csv.reader(csvfile, delimiter=',')
@@ -142,8 +129,8 @@ def parse_users_xml():
     Parses the XML file
     """
 
-    with open('runtime/data/users.xml', 'r') as f:
-        users = etree.parse(f).find('users')
+    with open('runtime/data/users.xml', 'r') as file:
+        users = etree.parse(file).find('users')
 
     return [
         {

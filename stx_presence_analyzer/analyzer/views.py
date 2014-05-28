@@ -1,12 +1,29 @@
-from django.shortcuts import render
 from django.views.generic import TemplateView
 from stx_presence_analyzer.analyzer import utils
-from django import http
-from django.http import HttpResponse
 import calendar
-import json
 import logging
-log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
+import json
+from django.http import HttpResponse
+log = logging.getLogger(__name__)  # pylint: disable=C0103
+
+
+class JSONResponseMixin(object):
+    """
+    A mixin that can be used to render a JSON response.
+    """
+    def render_to_json_response(self, context, **response_kwargs):
+        """
+        Returns a JSON response, transforming 'context' to make the payload.
+        """
+        return HttpResponse(
+            self.convert_context_to_json(context),
+            content_type='application/json',
+            **response_kwargs
+        )
+
+    def convert_context_to_json(self, context):
+        "Convert the context dictionary into a JSON object"
+        return json.dumps(context)
 
 
 class PresenceWeekday(TemplateView):
@@ -96,7 +113,9 @@ class PresenceStartEnd(TemplateView):
         return context
 
 
-class Users(TemplateView):
+class Users(JSONResponseMixin, TemplateView):
+    """docstring for Users"""
+
     template_name = 'users.html'
 
     def get_context_data(self, **kwargs):
