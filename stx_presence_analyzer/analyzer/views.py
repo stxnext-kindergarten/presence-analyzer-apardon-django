@@ -11,28 +11,24 @@ log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
 
 class PresenceWeekday(TemplateView):
     template_name = 'presence_weekday.html'
-    # template_name = 'tmp.html'
 
     def get_context_data(self, **kwargs):
         context = super(PresenceWeekday, self).get_context_data(**kwargs)
         user_id = kwargs.get('user_id')
 
-        if user_id is not None:
-            user_id = int(user_id)
-
+        users = utils.parse_users_xml()
         data = utils.get_data()
 
-        if user_id is None or user_id not in data:
-            log.debug('User %s not found!', user_id)
-            return []
+        if user_id not in data:
+            context['users'] = users
+            context['active_page'] = 'presence_weekday'
+            return context
 
         weekdays = utils.group_by_weekday(data[user_id])
         result = [(calendar.day_abbr[weekday], sum(intervals))
                   for weekday, intervals in weekdays.items()]
 
         result.insert(0, ('Weekday', 'Presence (s)'))
-
-        users = utils.parse_users_xml()
 
         context['users'] = users
         context['presence_weekday'] = result
@@ -48,20 +44,18 @@ class MeanTimePresence(TemplateView):
         context = super(MeanTimePresence, self).get_context_data(**kwargs)
         user_id = kwargs.get('user_id')
 
-        if user_id is not None:
-            user_id = int(user_id)
-
         data = utils.get_data()
+        users = utils.parse_users_xml()
 
         if user_id not in data:
-            log.debug('User %s not found!', user_id)
-            return []
+            context['users'] = users
+            context['active_page'] = 'mean_time_weekday'
+            return context
 
         weekdays = utils.group_by_weekday(data[user_id])
         result = [(calendar.day_abbr[weekday], utils.mean(intervals))
                   for weekday, intervals in weekdays.items()]
 
-        users = utils.parse_users_xml()
         context['users'] = users
         context['mean_time_weekday'] = result
         context['active_page'] = 'mean_time_weekday'
@@ -76,14 +70,13 @@ class PresenceStartEnd(TemplateView):
         context = super(PresenceStartEnd, self).get_context_data(**kwargs)
         user_id = kwargs.get('user_id')
 
-        if user_id is not None:
-            user_id = int(user_id)
-
+        users = utils.parse_users_xml()
         data = utils.get_data()
 
         if user_id not in data:
-            log.debug('User %s not found!', user_id)
-            return []
+            context['users'] = users
+            context['active_page'] = 'presence_start_end'
+            return context
 
         start_end_by_weekday = utils.group_start_end_by_weekday(data[user_id])
 
@@ -96,9 +89,17 @@ class PresenceStartEnd(TemplateView):
             for weekday, intervals in start_end_by_weekday.items()
         ]
 
-        users = utils.parse_users_xml()
         context['users'] = users
         context['presence_start_end'] = result
         context['active_page'] = 'presence_start_end'
 
+        return context
+
+
+class Users(TemplateView):
+    template_name = 'users.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(Users, self).get_context_data(**kwargs)
+        context['users'] = utils.parse_users_xml()
         return context

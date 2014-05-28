@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 from django.contrib import admin
-from analyzer.views import PresenceWeekday, MeanTimePresence, PresenceStartEnd
+from analyzer import views
 
 admin.autodiscover()
 
@@ -10,12 +10,15 @@ admin.autodiscover()
 
 urlpatterns = patterns(
     '',
-    url(r'^$', PresenceWeekday.as_view()),
-    url(r'^(?P<user_id>\d+)/$', PresenceWeekday.as_view()),
-    url(r'^mean_time_presence/$', MeanTimePresence.as_view()),
-    url(r'^mean_time_presence/(?P<user_id>\d+)/$', MeanTimePresence.as_view()),
-    url(r'^presence_start_end/$', PresenceStartEnd.as_view()),
-    url(r'^presence_start_end/(?P<user_id>\d+)/$', PresenceStartEnd.as_view()),
+    url(r'^$', views.PresenceWeekday.as_view()),
+    url(r'^(?P<user_id>\d+)/$', views.PresenceWeekday.as_view()),
+    url(r'^mean_time_presence/$', views.MeanTimePresence.as_view()),
+    url(r'^mean_time_presence/(?P<user_id>\d+)/$',
+        views.MeanTimePresence.as_view()),
+    url(r'^presence_start_end/$', views.PresenceStartEnd.as_view()),
+    url(r'^presence_start_end/(?P<user_id>\d+)/$',
+        views.PresenceStartEnd.as_view()),
+    url(r'^users/$', views.Users.as_view()),
     # Example:
     # (r'^{{ project_name }}/', include('{{ project_name }}.foo.urls')),
 
