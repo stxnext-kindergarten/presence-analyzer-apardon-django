@@ -39,7 +39,7 @@ def cache(cache_time):
 
 
 @cache(600)
-def get_data():
+def get_data(filename):
     """
     Extracts presence data from CSV file and groups it by user_id.
 
@@ -58,7 +58,7 @@ def get_data():
     }
     """
     data = {}
-    with open('runtime/data/sample_data.csv', 'r') as csvfile:
+    with open(filename, 'r') as csvfile:
         presence_reader = csv.reader(csvfile, delimiter=',')
         for i, row in enumerate(presence_reader):
             if len(row) != 4:
@@ -124,13 +124,13 @@ def mean(items):
     return float(sum(items)) / len(items) if len(items) > 0 else 0
 
 
-def parse_users_xml():
+def parse_users_xml(filename):
     """
     Parses the XML file
     """
 
-    with open('runtime/data/users.xml', 'r') as file:
-        users = etree.parse(file).find('users')
+    with open(filename, 'r') as xml_file:
+        users = etree.parse(xml_file).find('users')
 
     return [
         {

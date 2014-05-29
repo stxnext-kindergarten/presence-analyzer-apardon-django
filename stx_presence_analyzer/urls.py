@@ -1,3 +1,7 @@
+"""
+Defines urls
+"""
+
 from django.conf.urls import patterns, url
 from django.contrib import admin
 from stx_presence_analyzer.analyzer import views

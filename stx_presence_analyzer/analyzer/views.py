@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+Defines views.
+"""
+
 from django.views.generic import TemplateView
 from stx_presence_analyzer.analyzer import utils
 import calendar
@@ -35,7 +40,9 @@ class JSONResponseMixin(object):
 
 
 class MainPage(TemplateView):
-    """docstring for MainPage"""
+    """
+    Redirects to front page.
+    """
     template_name = 'presence_weekday.html'
 
     def get_context_data(self, **kwargs):
@@ -45,7 +52,9 @@ class MainPage(TemplateView):
 
 
 class MeanTimePresence(TemplateView):
-    """docstring for MeanTimePresence"""
+    """
+    Renders template to presence mean time page
+    """
     template_name = 'mean_time_weekday.html'
 
     def get_context_data(self, **kwargs):
@@ -55,7 +64,9 @@ class MeanTimePresence(TemplateView):
 
 
 class PresenceStartEnd(TemplateView):
-    """docstring for MeanTimePresence"""
+    """
+    Renders template to average presence time page
+    """
     template_name = 'presence_start_end.html'
 
     def get_context_data(self, **kwargs):
@@ -65,10 +76,12 @@ class PresenceStartEnd(TemplateView):
 
 
 class APIPresenceWeekday(JSONResponseMixin, TemplateView):
-
+    """
+    Returns total presence time of given user grouped by weekday.
+    """
     def get_context_data(self, **kwargs):
         user_id = kwargs.get('user_id')
-        data = utils.get_data()
+        data = utils.get_data('runtime/data/sample_data.csv')
 
         weekdays = utils.group_by_weekday(data[int(user_id)])
         result = [(calendar.day_abbr[weekday], sum(intervals))
@@ -80,10 +93,12 @@ class APIPresenceWeekday(JSONResponseMixin, TemplateView):
 
 
 class APIMeanTimePresence(JSONResponseMixin, TemplateView):
-
+    """
+    Returns mean presence time of given user grouped by weekday.
+    """
     def get_context_data(self, **kwargs):
         user_id = kwargs.get('user_id')
-        data = utils.get_data()
+        data = utils.get_data('runtime/data/sample_data.csv')
 
         weekdays = utils.group_by_weekday(data[int(user_id)])
         result = [(calendar.day_abbr[weekday], utils.mean(intervals))
@@ -93,10 +108,12 @@ class APIMeanTimePresence(JSONResponseMixin, TemplateView):
 
 
 class APIPresenceStartEnd(JSONResponseMixin, TemplateView):
-
+    """
+    Return average presence time of given user
+    """
     def get_context_data(self, **kwargs):
         user_id = kwargs.get('user_id')
-        data = utils.get_data()
+        data = utils.get_data('runtime/data/sample_data.csv')
 
         start_end_by_weekday = utils.group_start_end_by_weekday(
             data[int(user_id)])
@@ -112,7 +129,8 @@ class APIPresenceStartEnd(JSONResponseMixin, TemplateView):
 
 
 class Users(JSONResponseMixin, TemplateView):
-    """docstring for Users"""
-
+    """"
+    Users listing for dropdown.
+    """
     def get_context_data(self, **kwargs):
-        return utils.parse_users_xml()
+        return utils.parse_users_xml('runtime/data/users.xml')
