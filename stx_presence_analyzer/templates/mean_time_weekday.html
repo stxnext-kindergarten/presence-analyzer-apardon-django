@@ -14,13 +14,13 @@ function parseInterval(value) {
 (function($) {
     $(document).ready(function(){
         var loading = $('#loading');
-        $.getJSON("users/", function(result) {
+        $.getJSON("/users/", function(result) {
             var dropdown = $("#user_id");
             $.each(result, function(item) {
                 dropdown.append($("<option />").val(this.user_id).text(this.name));
             });
             dropdown.show();
-            oading.hide();
+            loading.hide();
         });
         $('#user_id').change(function(){
             var selected_user = $("#user_id").val();
@@ -30,7 +30,7 @@ function parseInterval(value) {
                 loading.show();
                 chart_div.hide();
                 photo.hide();
-                $.getJSON("mean_time_presence/"+selected_user, function(result) {
+                $.getJSON("/api/mean_time_presence/"+selected_user, function(result) {
                     $.each(result, function(index, value) {
                         value[1] = parseInterval(value[1]);
                     });

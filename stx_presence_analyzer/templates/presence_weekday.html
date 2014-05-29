@@ -8,7 +8,7 @@
 (function($) {
     $(document).ready(function(){
         var loading = $('#loading');
-        $.getJSON("users/", function(result) {
+        $.getJSON("/users/", function(result) {
             var dropdown = $("#user_id");
             $.each(result, function(item) {
                 dropdown.append($("<option />").val(this.user_id).text(this.name));
@@ -27,7 +27,7 @@
                 chart_div.hide();
                 photo.hide();
                 
-                $.getJSON("/"+selected_user, function(result) {
+                $.getJSON("/api/presence_weekday/"+selected_user, function(result) {
                     var data = google.visualization.arrayToDataTable(result);
                     var options = {};
                     chart_div.show();

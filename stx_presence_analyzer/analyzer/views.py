@@ -11,12 +11,20 @@ class JSONResponseMixin(object):
     """
     A mixin that can be used to render a JSON response.
     """
+    def render_to_response(self, context, **response_kwargs):
+        """
+        Returns a JSON response containing 'context' as payload
+        """
+        return self.render_to_json_response(
+            self.convert_context_to_json(context),
+            **response_kwargs)
+
     def render_to_json_response(self, context, **response_kwargs):
         """
         Returns a JSON response, transforming 'context' to make the payload.
         """
         return HttpResponse(
-            self.convert_context_to_json(context),
+            context,
             content_type='application/json',
             **response_kwargs
         )
@@ -26,78 +34,74 @@ class JSONResponseMixin(object):
         return json.dumps(context)
 
 
-class PresenceWeekday(TemplateView):
+class MainPage(TemplateView):
+    """docstring for MainPage"""
     template_name = 'presence_weekday.html'
 
     def get_context_data(self, **kwargs):
-        context = super(PresenceWeekday, self).get_context_data(**kwargs)
-        user_id = kwargs.get('user_id')
+        context = super(MainPage, self).get_context_data(**kwargs)
+        context['active_page'] = 'presence_weekday'
+        return context
 
-        users = utils.parse_users_xml()
+
+class MeanTimePresence(TemplateView):
+    """docstring for MeanTimePresence"""
+    template_name = 'mean_time_weekday.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(MeanTimePresence, self).get_context_data(**kwargs)
+        context['active_page'] = 'mean_time_weekday'
+        return context
+
+
+class PresenceStartEnd(TemplateView):
+    """docstring for MeanTimePresence"""
+    template_name = 'presence_start_end.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PresenceStartEnd, self).get_context_data(**kwargs)
+        context['active_page'] = 'presence_start_end'
+        return context
+
+
+class APIPresenceWeekday(JSONResponseMixin, TemplateView):
+
+    def get_context_data(self, **kwargs):
+        user_id = kwargs.get('user_id')
         data = utils.get_data()
 
-        if user_id not in data:
-            context['users'] = users
-            context['active_page'] = 'presence_weekday'
-            return context
-
-        weekdays = utils.group_by_weekday(data[user_id])
+        weekdays = utils.group_by_weekday(data[int(user_id)])
         result = [(calendar.day_abbr[weekday], sum(intervals))
                   for weekday, intervals in weekdays.items()]
 
         result.insert(0, ('Weekday', 'Presence (s)'))
 
-        context['users'] = users
-        context['presence_weekday'] = result
-        context['active_page'] = 'presence_weekday'
-
-        return context
+        return result
 
 
-class MeanTimePresence(TemplateView):
-    template_name = 'mean_time_weekday.html'
+class APIMeanTimePresence(JSONResponseMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
-        context = super(MeanTimePresence, self).get_context_data(**kwargs)
         user_id = kwargs.get('user_id')
-
         data = utils.get_data()
-        users = utils.parse_users_xml()
 
-        if user_id not in data:
-            context['users'] = users
-            context['active_page'] = 'mean_time_weekday'
-            return context
-
-        weekdays = utils.group_by_weekday(data[user_id])
+        weekdays = utils.group_by_weekday(data[int(user_id)])
         result = [(calendar.day_abbr[weekday], utils.mean(intervals))
                   for weekday, intervals in weekdays.items()]
 
-        context['users'] = users
-        context['mean_time_weekday'] = result
-        context['active_page'] = 'mean_time_weekday'
-
-        return context
+        return result
 
 
-class PresenceStartEnd(TemplateView):
-    template_name = 'presence_start_end.html'
+class APIPresenceStartEnd(JSONResponseMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
-        context = super(PresenceStartEnd, self).get_context_data(**kwargs)
         user_id = kwargs.get('user_id')
-
-        users = utils.parse_users_xml()
         data = utils.get_data()
 
-        if user_id not in data:
-            context['users'] = users
-            context['active_page'] = 'presence_start_end'
-            return context
+        start_end_by_weekday = utils.group_start_end_by_weekday(
+            data[int(user_id)])
 
-        start_end_by_weekday = utils.group_start_end_by_weekday(data[user_id])
-
-        result = [
+        return [
             (
                 calendar.day_abbr[weekday],
                 utils.mean(intervals['starts']),
@@ -106,19 +110,9 @@ class PresenceStartEnd(TemplateView):
             for weekday, intervals in start_end_by_weekday.items()
         ]
 
-        context['users'] = users
-        context['presence_start_end'] = result
-        context['active_page'] = 'presence_start_end'
-
-        return context
-
 
 class Users(JSONResponseMixin, TemplateView):
     """docstring for Users"""
 
-    template_name = 'users.html'
-
     def get_context_data(self, **kwargs):
-        context = super(Users, self).get_context_data(**kwargs)
-        context['users'] = utils.parse_users_xml()
-        return context
+        return utils.parse_users_xml()
