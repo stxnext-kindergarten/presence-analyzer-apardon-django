@@ -14,7 +14,7 @@ function parseInterval(value) {
 (function($) {
     $(document).ready(function(){
         var loading = $('#loading');
-        $.getJSON("/users/", function(result) {
+        $.getJSON("{% url 'users' %}", function(result) {
             var dropdown = $("#user_id");
             $.each(result, function(item) {
                 dropdown.append($("<option />").val(this.user_id).text(this.name));
@@ -30,7 +30,7 @@ function parseInterval(value) {
                 loading.show();
                 chart_div.hide();
                 photo.hide();
-                $.getJSON("/api/mean_time_presence/"+selected_user, function(result) {
+                $.getJSON("{% url 'mean_time_presence_api' user_id=10 %}".replace(10, selected_user), function(result) {
                     $.each(result, function(index, value) {
                         value[1] = parseInterval(value[1]);
                     });

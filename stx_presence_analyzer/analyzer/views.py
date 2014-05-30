@@ -3,12 +3,14 @@
 Defines views.
 """
 
-from django.views.generic import TemplateView
-from stx_presence_analyzer.analyzer import utils
 import calendar
 import logging
 import json
 from django.http import HttpResponse
+from django.views.generic import TemplateView
+
+from stx_presence_analyzer.analyzer import utils
+
 log = logging.getLogger(__name__)  # pylint: disable=C0103
 
 
@@ -46,32 +48,17 @@ class MainPage(TemplateView):
     template_name = 'presence_weekday.html'
 
     def get_context_data(self, **kwargs):
-        context = super(MainPage, self).get_context_data(**kwargs)
-        context['active_page'] = 'presence_weekday'
-        return context
-
-
-class MeanTimePresence(TemplateView):
-    """
-    Renders template to presence mean time page
-    """
-    template_name = 'mean_time_weekday.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(MeanTimePresence, self).get_context_data(**kwargs)
-        context['active_page'] = 'mean_time_weekday'
-        return context
-
-
-class PresenceStartEnd(TemplateView):
-    """
-    Renders template to average presence time page
-    """
-    template_name = 'presence_start_end.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(PresenceStartEnd, self).get_context_data(**kwargs)
-        context['active_page'] = 'presence_start_end'
+        context = super(MainPage, self).get_context_data()
+        name = kwargs.get('template')
+        if name is None:
+            self.template_name = 'presence_weekday.html'
+            context['active_page'] = 'presence_weekday'
+        elif name == 'mean_time_weekday':
+            self.template_name = 'mean_time_weekday.html'
+            context['active_page'] = 'mean_time_weekday'
+        elif name == 'presence_start_end':
+            self.template_name = 'presence_start_end.html'
+            context['active_page'] = 'presence_start_end'
         return context
 
 

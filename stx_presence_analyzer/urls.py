@@ -8,20 +8,15 @@ from stx_presence_analyzer.analyzer import views
 
 admin.autodiscover()
 
-# Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
-
 urlpatterns = patterns(
     '',
     url(r'^api/presence_weekday/(?P<user_id>\d+)/$',
-        views.APIPresenceWeekday.as_view()),
+        views.APIPresenceWeekday.as_view(), name='presence_weekday_api'),
     url(r'^api/mean_time_presence/(?P<user_id>\d+)/$',
-        views.APIMeanTimePresence.as_view()),
+        views.APIMeanTimePresence.as_view(), name='mean_time_presence_api'),
     url(r'^api/presence_start_end/(?P<user_id>\d+)/$',
-        views.APIPresenceStartEnd.as_view()),
-    url(r'^users/$', views.Users.as_view()),
+        views.APIPresenceStartEnd.as_view(), name='presence_start_end_api'),
+    url(r'^users/$', views.Users.as_view(), name='users'),
     url(r'^$', views.MainPage.as_view()),
-    url(r'^mean_time_presence/$', views.MeanTimePresence.as_view()),
-    url(r'^presence_start_end/$', views.PresenceStartEnd.as_view()),
+    url(r'^(?P<template>\w+)/$', views.MainPage.as_view()),
 )

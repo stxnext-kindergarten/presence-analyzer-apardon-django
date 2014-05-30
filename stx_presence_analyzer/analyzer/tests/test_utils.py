@@ -1,105 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-Presence analyzer unit tests.
+Presence analyzer utils unit tests.
 """
 
-from django.test import TestCase
-import os.path
 import datetime
 import unittest
-import json
+
 from stx_presence_analyzer.analyzer import utils
-
-
-# pylint: disable=E1103
-class PresenceAnalyzerViewsTestCase(TestCase):
-    """
-    Views tests.
-    """
-
-    def setUp(self):
-        """
-        Before each test, set up a environment.
-        """
-        pass
-
-    def tearDown(self):
-        """
-        Get rid of unused objects after each test.
-        """
-        pass
-
-    def test_home_page(self):
-        """
-        Tests home page template
-        """
-        response = self.client.get('/')
-        self.assertTemplateUsed(response, 'presence_weekday.html')
-
-    def test_mean_time_presence(self):
-        """
-        Tests mean time presence template
-        """
-        response = self.client.get('/mean_time_presence/')
-        self.assertTemplateUsed(response, 'mean_time_weekday.html')
-
-    def test_presence_start_end(self):
-        """
-        Tests presence start-end template
-        """
-        response = self.client.get('/presence_start_end/')
-        self.assertTemplateUsed(response, 'presence_start_end.html')
-
-    def test_get(self):
-        response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.context_data['active_page'], 'presence_weekday'
-        )
-        response = self.client.get('/mean_time_presence/')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.context_data['active_page'], 'mean_time_weekday'
-        )
-        response = self.client.get('/presence_start_end/')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.context_data['active_page'], 'presence_start_end'
-        )
-
-    def test_users(self):
-        """
-        Test users listing.
-        """
-        response = self.client.get('/users/')
-        self.assertEqual(response.status_code, 200)
-
-    def test_api(self):
-        response = self.client.get('/api/presence_weekday/10/')
-        self.assertEqual(response.status_code, 200)
-        response = self.client.get('/api/mean_time_presence/30/')
-        self.assertEqual(response.status_code, 200)
-        response = self.client.get('/api/presence_start_end/20/')
-        self.assertEqual(response.status_code, 200)
 
 
 class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
     """
     Utility functions tests.
     """
-
-    def setUp(self):
-        """
-        Before each test, set up a environment.
-        """
-        pass
-
-    def tearDown(self):
-        """
-        Get rid of unused objects after each test.
-        """
-        pass
-
     def test_get_data(self):
         """
         Test parsing of CSV file.
@@ -193,27 +106,3 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         self.assertIsInstance(sample_data, dict)
         self.assertEqual(len(sample_data), 7)
         self.assertEqual(sample_data, expected_result)
-
-    def test_parse_users_xml(self):
-        """
-        Test xml parser
-        """
-        parsed_data = utils.parse_users_xml('runtime/data/test_users.xml')
-        expected_result = {'user_id': 19, 'name': 'Anna K.'}
-        self.assertEqual(len(parsed_data), 8)
-        self.assertIsInstance(parsed_data, list)
-        self.assertEqual(parsed_data[5], expected_result)
-
-
-def suite():
-    """
-    Default test suite.
-    """
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(PresenceAnalyzerViewsTestCase))
-    suite.addTest(unittest.makeSuite(PresenceAnalyzerUtilsTestCase))
-    return suite
-
-
-if __name__ == '__main__':
-    unittest.main()

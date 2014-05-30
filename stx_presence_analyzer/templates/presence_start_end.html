@@ -8,7 +8,7 @@
 (function($) {
     $(document).ready(function(){
         var loading = $('#loading');
-        $.getJSON("/users/", function(result) {
+        $.getJSON("{% url 'users' %}", function(result) {
             var dropdown = $("#user_id");
             $.each(result, function(item) {
                 dropdown.append($("<option />").val(this.user_id).text(this.name));
@@ -25,7 +25,7 @@
                 loading.show();
                 chart_div.hide();
                 photo.hide();
-                $.getJSON("/api/presence_start_end/"+selected_user,  function(result) {
+                $.getJSON("{% url 'presence_start_end_api' user_id=10 %}".replace(10, selected_user),  function(result) {
                     $.each(result, function(index, value) {
                         value[1] = new Date(value[1] * 1000);
                         value[2] = new Date(value[2] * 1000);
