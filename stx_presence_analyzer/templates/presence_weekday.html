@@ -27,7 +27,7 @@
                 chart_div.hide();
                 photo.hide();
                 
-                $.getJSON("{% url 'presence_weekday_api' user_id=10 %}".replace(10, selected_user), function(result) {
+                $.getJSON("/api/presence_weekday/"+selected_user, function(result) {
                     var data = google.visualization.arrayToDataTable(result);
                     var options = {};
                     chart_div.show();
