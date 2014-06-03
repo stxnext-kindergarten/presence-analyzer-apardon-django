@@ -1,0 +1,39 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8>
+    <title>Presence analyzer</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content=""/>
+    <meta name="author" content="STX Next sp. z o.o."/>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0">
+
+    <link href="{{ STATIC_URL }}css/style.css" rel="stylesheet" type="text/css">
+    <link href="{{ STATIC_URL }}css/normalize.css" media="all" rel="stylesheet" type="text/css" />
+    <script src="{{ STATIC_URL }}js/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+    {% block script %}
+    {% endblock %}
+</head>
+<body>
+	<div id="main">
+        <div id="header">
+            <ul>
+                <li{% if active_page == 'presence_weekday' %} id="selected" {% endif %}>
+                    <a href="/">Presence by weekday</a>
+                </li>
+                <li{% if active_page == 'mean_time_weekday' %} id="selected" {% endif %}>
+                    <a href="/mean_time_weekday/">Presence mean time</a>
+                </li>
+                <li{% if active_page == 'presence_start_end' %} id="selected" {% endif %}>
+                    <a href="/presence_start_end/">Presence start-end</a>
+                </li>
+            </ul>
+        </div>
+		{% block content %}
+		{% endblock %}
+	</div>
+</body>
+</html>

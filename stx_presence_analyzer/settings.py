@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 
 # Build paths inside the project like this: BASE_DIR(...)
-BASE_DIR = lambda * x: os.path.join(os.path.dirname(__file__), *x)
+BASE_DIR = lambda * x: os.path.join(os.path.dirname(__file__), * x)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -73,4 +73,8 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
     BASE_DIR('public'),
+)
+
+TEMPLATE_DIRS = (
+    BASE_DIR('templates'),
 )
