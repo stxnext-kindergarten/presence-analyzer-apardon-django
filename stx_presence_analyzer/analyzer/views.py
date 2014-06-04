@@ -10,6 +10,7 @@ from django.http import HttpResponse
 from django.views.generic import TemplateView
 
 from stx_presence_analyzer.analyzer import utils
+from stx_presence_analyzer.analyzer.models import User, Presence
 
 log = logging.getLogger(__name__)  # pylint: disable=C0103
 
@@ -18,6 +19,17 @@ class JSONResponseMixin(object):
     """
     A mixin that can be used to render a JSON response.
     """
+    def get_data(self, user_id):
+        presences = Presence.objects.filter(user__user_id=user_id)
+
+        return {
+            presence.day: {
+                "start": presence.start,
+                "end": presence.end
+            }
+            for presence in presences
+        }
+
     def render_to_response(self, context, **response_kwargs):
         """
         Returns a JSON response containing 'context' as payload
@@ -62,15 +74,28 @@ class MainPage(TemplateView):
         return context
 
 
-class APIPresenceWeekday(JSONResponseMixin, TemplateView):
-    """
-    Returns total presence time of given user grouped by weekday.
+class Users(JSONResponseMixin, TemplateView):
+    """"
+    Users listing for dropdown.
     """
     def get_context_data(self, **kwargs):
-        user_id = kwargs.get('user_id')
-        data = utils.get_data('runtime/data/sample_data.csv')
+        users = User.objects.all()
+        return [
+            {
+                "user_id": user.user_id,
+                "name": user.name
+            }
+            for user in users
+        ]
 
-        weekdays = utils.group_by_weekday(data[int(user_id)])
+
+class APIPresenceWeekday(JSONResponseMixin, TemplateView):
+    """docstring for Test"""
+    def get_context_data(self, **kwargs):
+        user_id = kwargs.get('user_id')
+        data = self.get_data(int(user_id))
+
+        weekdays = utils.group_by_weekday(data)
         result = [(calendar.day_abbr[weekday], sum(intervals))
                   for weekday, intervals in weekdays.items()]
 
@@ -85,9 +110,9 @@ class APIMeanTimePresence(JSONResponseMixin, TemplateView):
     """
     def get_context_data(self, **kwargs):
         user_id = kwargs.get('user_id')
-        data = utils.get_data('runtime/data/sample_data.csv')
+        data = self.get_data(int(user_id))
 
-        weekdays = utils.group_by_weekday(data[int(user_id)])
+        weekdays = utils.group_by_weekday(data)
         result = [(calendar.day_abbr[weekday], utils.mean(intervals))
                   for weekday, intervals in weekdays.items()]
 
@@ -100,10 +125,9 @@ class APIPresenceStartEnd(JSONResponseMixin, TemplateView):
     """
     def get_context_data(self, **kwargs):
         user_id = kwargs.get('user_id')
-        data = utils.get_data('runtime/data/sample_data.csv')
+        data = self.get_data(int(user_id))
 
-        start_end_by_weekday = utils.group_start_end_by_weekday(
-            data[int(user_id)])
+        start_end_by_weekday = utils.group_start_end_by_weekday(data)
 
         return [
             (
@@ -113,11 +137,3 @@ class APIPresenceStartEnd(JSONResponseMixin, TemplateView):
             )
             for weekday, intervals in start_end_by_weekday.items()
         ]
-
-
-class Users(JSONResponseMixin, TemplateView):
-    """"
-    Users listing for dropdown.
-    """
-    def get_context_data(self, **kwargs):
-        return utils.parse_users_xml('runtime/data/users.xml')

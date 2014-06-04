@@ -36,7 +36,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'stx_presence_analyzer.analyzer'
+    'stx_presence_analyzer.analyzer',
+    'south',
 )
 
 MIDDLEWARE_CLASSES = (
