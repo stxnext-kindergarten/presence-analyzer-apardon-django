@@ -93,6 +93,10 @@ class APIPresenceWeekday(JSONResponseMixin, TemplateView):
     """docstring for Test"""
     def get_context_data(self, **kwargs):
         user_id = kwargs.get('user_id')
+
+        if user_id is None:
+            return []
+
         data = self.get_data(int(user_id))
 
         weekdays = utils.group_by_weekday(data)
@@ -110,6 +114,10 @@ class APIMeanTimePresence(JSONResponseMixin, TemplateView):
     """
     def get_context_data(self, **kwargs):
         user_id = kwargs.get('user_id')
+
+        if user_id is None:
+            return []
+
         data = self.get_data(int(user_id))
 
         weekdays = utils.group_by_weekday(data)
@@ -125,6 +133,10 @@ class APIPresenceStartEnd(JSONResponseMixin, TemplateView):
     """
     def get_context_data(self, **kwargs):
         user_id = kwargs.get('user_id')
+
+        if user_id is None:
+            return []
+
         data = self.get_data(int(user_id))
 
         start_end_by_weekday = utils.group_start_end_by_weekday(data)

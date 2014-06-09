@@ -8,7 +8,7 @@ class User(models.Model):
     """
     Represents single user
     """
-    user_id = models.IntegerField(max_length=3)
+    user_id = models.IntegerField()
     name = models.CharField(max_length=120)
     avatar = models.CharField(max_length=120)
 
