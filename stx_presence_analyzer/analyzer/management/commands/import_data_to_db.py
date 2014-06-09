@@ -7,15 +7,15 @@ from stx_presence_analyzer.analyzer import models, utils
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('--users',
-            action='store_true',
-            dest='users',
-            default=False,
-            help='Imports users'),
+                    action='store_true',
+                    dest='users',
+                    default=False,
+                    help='Imports users'),
         make_option('--presences',
-            action='store_true',
-            dest='presences',
-            default=False,
-            help='Imports presences'),
+                    action='store_true',
+                    dest='presences',
+                    default=False,
+                    help='Imports presences'),
     )
 
     def handle(self, *args, **options):
@@ -38,4 +38,3 @@ class Command(BaseCommand):
                         start=presences[user][date]['start'],
                         end=presences[user][date]['end']
                     )
-                    print "%s" % (user)

@@ -30,6 +30,49 @@ class JSONResponseMixin(object):
             for presence in presences
         }
 
+    def get_presence_weekday(self, user_id):
+        if user_id is None:
+            return []
+
+        data = self.get_data(int(user_id))
+
+        weekdays = utils.group_by_weekday(data)
+        result = [(calendar.day_abbr[weekday], sum(intervals))
+                  for weekday, intervals in weekdays.items()]
+
+        result.insert(0, ('Weekday', 'Presence (s)'))
+
+        return result
+
+    def get_presence_mean_time(self, user_id):
+        if user_id is None:
+            return []
+
+        data = self.get_data(int(user_id))
+
+        weekdays = utils.group_by_weekday(data)
+        result = [(calendar.day_abbr[weekday], utils.mean(intervals))
+                  for weekday, intervals in weekdays.items()]
+
+        return result
+
+    def get_presence_start_end(self, user_id):
+        if user_id is None:
+            return []
+
+        data = self.get_data(int(user_id))
+
+        start_end_by_weekday = utils.group_start_end_by_weekday(data)
+
+        return [
+            (
+                calendar.day_abbr[weekday],
+                utils.mean(intervals['starts']),
+                utils.mean(intervals['ends'])
+            )
+            for weekday, intervals in start_end_by_weekday.items()
+        ]
+
     def render_to_response(self, context, **response_kwargs):
         """
         Returns a JSON response containing 'context' as payload
@@ -94,18 +137,7 @@ class APIPresenceWeekday(JSONResponseMixin, TemplateView):
     def get_context_data(self, **kwargs):
         user_id = kwargs.get('user_id')
 
-        if user_id is None:
-            return []
-
-        data = self.get_data(int(user_id))
-
-        weekdays = utils.group_by_weekday(data)
-        result = [(calendar.day_abbr[weekday], sum(intervals))
-                  for weekday, intervals in weekdays.items()]
-
-        result.insert(0, ('Weekday', 'Presence (s)'))
-
-        return result
+        self.get_presence_weekday(user_id)
 
 
 class APIMeanTimePresence(JSONResponseMixin, TemplateView):
@@ -115,16 +147,7 @@ class APIMeanTimePresence(JSONResponseMixin, TemplateView):
     def get_context_data(self, **kwargs):
         user_id = kwargs.get('user_id')
 
-        if user_id is None:
-            return []
-
-        data = self.get_data(int(user_id))
-
-        weekdays = utils.group_by_weekday(data)
-        result = [(calendar.day_abbr[weekday], utils.mean(intervals))
-                  for weekday, intervals in weekdays.items()]
-
-        return result
+        self.get_presence_mean_time(user_id)
 
 
 class APIPresenceStartEnd(JSONResponseMixin, TemplateView):
@@ -134,18 +157,4 @@ class APIPresenceStartEnd(JSONResponseMixin, TemplateView):
     def get_context_data(self, **kwargs):
         user_id = kwargs.get('user_id')
 
-        if user_id is None:
-            return []
-
-        data = self.get_data(int(user_id))
-
-        start_end_by_weekday = utils.group_start_end_by_weekday(data)
-
-        return [
-            (
-                calendar.day_abbr[weekday],
-                utils.mean(intervals['starts']),
-                utils.mean(intervals['ends'])
-            )
-            for weekday, intervals in start_end_by_weekday.items()
-        ]
+        self.get_presence_start_end(user_id)
