@@ -137,7 +137,7 @@ class APIPresenceWeekday(JSONResponseMixin, TemplateView):
     def get_context_data(self, **kwargs):
         user_id = kwargs.get('user_id')
 
-        self.get_presence_weekday(user_id)
+        return self.get_presence_weekday(user_id)
 
 
 class APIMeanTimePresence(JSONResponseMixin, TemplateView):
@@ -147,7 +147,7 @@ class APIMeanTimePresence(JSONResponseMixin, TemplateView):
     def get_context_data(self, **kwargs):
         user_id = kwargs.get('user_id')
 
-        self.get_presence_mean_time(user_id)
+        return self.get_presence_mean_time(user_id)
 
 
 class APIPresenceStartEnd(JSONResponseMixin, TemplateView):
@@ -157,4 +157,4 @@ class APIPresenceStartEnd(JSONResponseMixin, TemplateView):
     def get_context_data(self, **kwargs):
         user_id = kwargs.get('user_id')
 
-        self.get_presence_start_end(user_id)
+        return self.get_presence_start_end(user_id)
