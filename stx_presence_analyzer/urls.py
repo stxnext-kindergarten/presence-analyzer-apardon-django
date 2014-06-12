@@ -2,14 +2,16 @@
 Defines urls
 """
 
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 from django.contrib import admin
+
 from stx_presence_analyzer.analyzer import views
 
 admin.autodiscover()
 
 urlpatterns = patterns(
     '',
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.MainPage.as_view()),
     url(r'^(?P<template>\w+)/$', views.MainPage.as_view()),
     url(r'^api/presence_weekday/(?P<user_id>\d+)/$',
